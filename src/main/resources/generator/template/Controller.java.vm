@@ -1,0 +1,230 @@
+package ${package}.controller;
+
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import javax.servlet.http.HttpServletResponse;
+
+import platform.zframe.common.enumresource.StateEnum;
+import platform.zframe.common.log.SysLog;
+import platform.zframe.common.utils.R;
+import platform.zframe.common.utils.Query;
+import platform.zframe.common.utils.PageUtils;
+import platform.zframe.common.support.office.excel.ExcelBoot;
+import platform.zframe.common.support.office.excel.entity.ErrorEntity;
+import platform.zframe.common.support.office.excel.function.ImportFunction;
+import platform.zframe.common.support.office.excel.function.ExportFunction;
+
+import ${package}.entity.${className};
+import ${package}.service.${className}Service;
+import platform.zframe.common.utils.PageUtils;
+import platform.zframe.common.utils.Query;
+import platform.zframe.common.utils.R;
+
+
+/**
+ * ${comments}
+ * 
+ * @author ${author}
+ * @email ${email}
+ * @date ${datetime}
+ */
+@Controller
+@RequestMapping("${ftlPath}")
+public class ${className}Controller {
+	@Autowired
+	private ${className}Service ${classname}Service;
+	
+    /**
+     * 跳转到列表页
+     */
+    @RequestMapping("/list")
+    @RequiresPermissions("${pathName}:list")
+    public String list() {
+        return "${ftlPath}/list";
+    }
+    
+	/**
+	 * 列表数据
+	 */
+    @ResponseBody
+	@RequestMapping("/listData")
+	@RequiresPermissions("${pathName}:list")
+	public R listData(@RequestParam Map<String, Object> params){
+		//查询列表数据
+        Query query = new Query(params);
+
+		List<${className}> ${classname}List = ${classname}Service.getList(query);
+		int total = ${classname}Service.getCount(query);
+		
+		PageUtils pageUtil = new PageUtils(${classname}List, total, query.getLimit(), query.getPage());
+		
+		return R.ok().put("page", pageUtil);
+	}
+
+    /**
+     * 跳转到新增页面
+     **/
+    @RequestMapping("/add")
+    @RequiresPermissions("${pathName}:save")
+    public String add(){
+        return "${ftlPath}/add";
+    }
+
+    /**
+     *   跳转到修改页面
+     **/
+    @RequestMapping("/edit/{id}")
+    @RequiresPermissions("${pathName}:update")
+    public String edit(Model model, @PathVariable("${pk.attrname}") ${pk.attrType} ${pk.attrname}){
+		${className} ${classname} = ${classname}Service.get(id);
+        model.addAttribute("model",${classname});
+        return "${ftlPath}/edit";
+    }
+
+	/**
+	 * 信息json
+	 */
+    @ResponseBody
+    @RequestMapping("/infojson/{${pk.attrname}}")
+    @RequiresPermissions("${pathName}:info")
+    public R info(@PathVariable("${pk.attrname}") ${pk.attrType} ${pk.attrname}){
+        ${className} ${classname} = ${classname}Service.get(${pk.attrname});
+        return R.ok().put("${classname}", ${classname});
+    }
+
+    /**
+     * 信息 view
+     */
+    @RequestMapping("/info/{${pk.attrname}}")
+    @RequiresPermissions("${pathName}:info")
+    public String info(Model model,@PathVariable("${pk.attrname}") ${pk.attrType} ${pk.attrname}){
+        ${className} ${classname} = ${classname}Service.get(${pk.attrname});
+        model.addAttribute("model",${classname});
+        return "app/daodan/test/info";
+    }
+
+    /**
+	 * 保存
+	 */
+    @ResponseBody
+    @SysLog("保存${comments}")
+	@RequestMapping("/save")
+	@RequiresPermissions("${pathName}:save")
+	public R save(@RequestBody ${className} ${classname}){
+		${classname}Service.save(${classname});
+		return R.ok();
+	}
+	
+	/**
+	 * 修改
+	 */
+    @ResponseBody
+    @SysLog("修改${comments}")
+	@RequestMapping("/update")
+	@RequiresPermissions("${pathName}:update")
+	public R update(@RequestBody ${className} ${classname}){
+		${classname}Service.update(${classname});
+		
+		return R.ok();
+	}
+
+    /**
+     * 启用
+     */
+    @ResponseBody
+    @SysLog("启用${comments}")
+    @RequestMapping("/enable")
+    @RequiresPermissions("${pathName}:update")
+    public R enable(@RequestBody String[] ids){
+        String stateValue=StateEnum.ENABLE.getCode();
+		${classname}Service.updateState(ids,stateValue);
+        return R.ok();
+    }
+    /**
+     * 禁用
+     */
+    @ResponseBody
+    @SysLog("禁用${comments}")
+    @RequestMapping("/limit")
+    @RequiresPermissions("${pathName}:update")
+    public R limit(@RequestBody String[] ids){
+        String stateValue=StateEnum.LIMIT.getCode();
+		${classname}Service.updateState(ids,stateValue);
+        return R.ok();
+    }
+	
+	/**
+	 * 删除
+	 */
+    @ResponseBody
+    @SysLog("删除${comments}")
+	@RequestMapping("/delete")
+	@RequiresPermissions("${pathName}:delete")
+	public R delete(@RequestBody ${pk.attrType}[] ${pk.attrname}s){
+		${classname}Service.deleteBatch(${pk.attrname}s);
+		
+		return R.ok();
+	}
+    @RequestMapping("/export")
+    public void exportExcel(HttpServletResponse response,@RequestParam Map<String, Object> params){
+        ExcelBoot.ExportBuilder(response,"${comments}",${className}.class).exportResponse(params, new ExportFunction<Map<String, Object>, ${className}>() {
+            @Override
+            public List<${className}> pageQuery(Map<String, Object> queryQaram, int pageNum, int pageSize) {
+                List<${className}> ${classname}List =null;
+                if("tmpl".equals(params.get("opr"))){
+
+                }else if("data".equals(params.get("opr"))){
+                        Query query = new Query(params);
+                        ${classname}List= ${classname}Service.getList(query);
+                }
+                return ${classname}List;
+            }
+            //每个对象会回调这个方法
+            @Override
+            public ${className} convert(${className} ${classname}) {
+                return ${classname};
+            }
+        });
+    }
+
+    @ResponseBody
+    @RequestMapping("/import")
+    public R importExcel(@RequestParam("file") MultipartFile file){
+        try {
+            List<${className}> list = new ArrayList<${className}>();
+            List<ErrorEntity> err = new ArrayList<ErrorEntity>();
+            ExcelBoot.ImportBuilder(file.getInputStream(), ${className}.class).importExcel(new ImportFunction() {
+                //每一行回调
+                @Override
+                public void onProcess(int sheetIndex, int rowIndex, Object entity) {
+                    list.add((${className}) entity);
+                }
+                //发生导入错误回调
+                @Override
+                public void onError(ErrorEntity errorEntity) {
+                    err.add(errorEntity);
+                }
+            });
+            if (err.size() > 0) {
+                return R.error("发生异常，请核对： "+err.toString());
+            } else {
+                // service 执行保存， 请自己写数据关联
+//				for(${className} ${classname}:list){
+//					${classname}Service.save(${classname});
+//				}
+                return R.ok();
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            return R.error(e.getMessage());
+        }
+    }
+}
