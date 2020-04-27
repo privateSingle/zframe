@@ -26,6 +26,7 @@
 <script src="/common/js/whole/utils.js"></script>
 <script src="/common/js/whole/monitor.js"></script>
 <script src="/common/js/whole/excelOpr.js"></script>
+<script src="/common/js/laydate.js"></script>
 <!--样式-->
 <link rel="stylesheet" href="/common/css/zStyle.css">
 <link rel="stylesheet" href="/common/css/zType.css">

@@ -18,7 +18,7 @@ import ${package}.service.${className}Service;
 public class ${className}ServiceImpl implements ${className}Service {
 	@Autowired
 	private ${className}Dao ${classname}Dao;
-	
+
 	@Override
 	public ${className} get(${pk.attrType} ${pk.attrname}){
 		return ${classname}Dao.get(${pk.attrname});
@@ -54,13 +54,5 @@ public class ${className}ServiceImpl implements ${className}Service {
 		${classname}Dao.deleteBatch(${pk.attrname}s);
 	}
 
-    @Override
-    public void updateState(String[] ids,String stateValue) {
-        for (String id:ids){
-			${className} ${classname}=get(id);
-			${classname}.setState(stateValue);
-            update(${classname});
-        }
-    }
-	
+
 }

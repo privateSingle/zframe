@@ -38,12 +38,6 @@
         <button class="layui-btn" onclick="editPage('${classname}Table','/${ftlPath}/edit')">
             <i class="fa fa-pencil-square-o">&nbsp;</i>修改
         </button>
-         <button class="layui-btn layui-btn-green" onclick="updateState('启用','${classname}Table','/${ftlPath}/enable')">
-            <i class="fa fa-check-square-o">&nbsp;</i>启用
-        </button>
-        <button class="layui-btn  layui-btn-danger" onclick="updateState('禁用','${classname}Table','/${ftlPath}/limit')">
-            <i class="fa fa-expeditedssl">&nbsp;</i>禁用
-        </button>
         </@shiro.hasPermission>
         <@shiro.hasPermission name="${pathName}:delete">
          <button class="layui-btn layui-btn-delete" onclick="deleteBatch('删除','${classname}Table','/${ftlPath}/delete');">
@@ -85,7 +79,6 @@
 			#end
             #end
             <!--isPrimary：渲染列-->
-            <th width="10%" param="{name:'state',enumName:'StateEnum',render:'Render.customState'}">状态</th>
             <th width="10%" param="{operate:'true',buttons:'Render.state,Render.info,Render.edit,Render.delete'}">操作</th>
         </tr>
         </thead>
