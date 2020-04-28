@@ -40,13 +40,13 @@
     <button class="layui-btn" onclick="initPassword('userTable','/sys/user/initPassword');" style="margin-left: 5px!important;">
         <i class="fa fa-refresh">&nbsp;</i>初始化密码 123456
     </button>
-    <input type="file" id="file" onchange="getFilePath('/sys/user/import')" style="filter:alpha(opacity=0);opacity:0;width: 0;height: 0;"/>
+    <#--<input type="file" id="file" onchange="getFilePath('/sys/user/import')" style="filter:alpha(opacity=0);opacity:0;width: 0;height: 0;"/>
     <button class="layui-btn" onclick="importExcel('/sys/user/export');" style="margin-left: 5px!important;">
         <i class="fa fa-cloud-upload">&nbsp;</i>导入
     </button>
     <button class="layui-btn" onclick="exportExcel('/sys/user/export');" style="margin-left: 5px!important;">
         <i class="fa fa-cloud-download">&nbsp;</i>导出
-    </button>
+    </button>-->
 
 </div>
 <div class="layui-form ">
@@ -66,6 +66,7 @@
             <th width="10%" param="{name:'email',sort:'false'}">邮箱</th>
             <th width="10%" param="{name:'mobile',sort:'true'}">手机号</th>
             <th width="10%" param="{name:'createTime',sort:'true'}">创建时间</th>
+            <th width="10%" param="{sort:'false',operate:'true',buttons:'Render.info,Render.info2'}">操作</th>
         </tr>
         </thead>
     </table>

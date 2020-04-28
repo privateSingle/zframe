@@ -22,7 +22,7 @@ import java.util.Map;
 
 /**
  * 系统用户
- * 
+ *
  * @author zhangyantao
  * @email zytzhangyantao@163.com
  * @date 2016年9月18日 上午9:46:09
@@ -50,7 +50,7 @@ public class SysUserServiceImpl implements SysUserService {
 	public SysUser queryByUserName(String username) {
 		return sysUserDao.queryByUserName(username);
 	}
-	
+
 	@Override
 	public SysUser queryObject(Long userId) {
 		return sysUserDao.queryObject(userId);
@@ -60,7 +60,7 @@ public class SysUserServiceImpl implements SysUserService {
 	public List<SysUser> queryList(Map<String, Object> map){
 		return sysUserDao.queryList(map);
 	}
-	
+
 	@Override
 	public int queryTotal(Map<String, Object> map) {
 		return sysUserDao.queryTotal(map);
@@ -73,10 +73,10 @@ public class SysUserServiceImpl implements SysUserService {
 		//sha256加密
 		user.setPassword(new Sha256Hash(DefaultEnum.PASSWORD.getCode()).toHex());
 		sysUserDao.save(user);
-		
+
 		//检查角色是否越权
 		checkRole(user);
-		
+
 		//保存用户与角色关系
 		sysUserRoleService.saveOrUpdate(user.getUserId(), user.getRoleIdList());
 	}
@@ -90,10 +90,10 @@ public class SysUserServiceImpl implements SysUserService {
 			user.setPassword(new Sha256Hash(user.getPassword()).toHex());
 		}
 		sysUserDao.update(user);
-		
+
 		//检查角色是否越权
 		checkRole(user);
-		
+
 		//保存用户与角色关系
 		sysUserRoleService.saveOrUpdate(user.getUserId(), user.getRoleIdList());
 	}
@@ -123,6 +123,11 @@ public class SysUserServiceImpl implements SysUserService {
 		}
 	}
 
+	@Override
+	public List<SysUser> queryList(Long userId) {
+		return  sysUserDao.queryList(userId);
+	}
+
 	/**
 	 * 检查角色是否越权
 	 */
@@ -131,10 +136,10 @@ public class SysUserServiceImpl implements SysUserService {
 		if(user.getCreateUserId() == Constant.SUPER_ADMIN){
 			return ;
 		}
-		
+
 		//查询用户创建的角色列表
 		List<Long> roleIdList = sysRoleService.queryRoleIdList(user.getCreateUserId());
-		
+
 		//判断是否越权
 		if(!roleIdList.containsAll(user.getRoleIdList())){
 			throw new MyException("新增用户所选角色，不是本人创建");

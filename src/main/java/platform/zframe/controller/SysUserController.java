@@ -18,13 +18,11 @@ import platform.zframe.common.support.office.excel.ExcelBoot;
 import platform.zframe.common.support.office.excel.entity.ErrorEntity;
 import platform.zframe.common.support.office.excel.function.ExportFunction;
 import platform.zframe.common.support.office.excel.function.ImportFunction;
-import platform.zframe.common.utils.Constant;
-import platform.zframe.common.utils.PageUtils;
-import platform.zframe.common.utils.Query;
-import platform.zframe.common.utils.R;
+import platform.zframe.common.utils.*;
 import platform.zframe.entity.SysUser;
 import platform.zframe.service.SysUserRoleService;
 import platform.zframe.service.SysUserService;
+import platform.zframe.vo.UserVo;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -34,7 +32,7 @@ import java.util.Map;
 
 /**
  * 系统用户
- * 
+ *
  * @author zhangyantao
  *
  * @date 2016年10月31日 上午10:40:10
@@ -46,6 +44,14 @@ public class SysUserController extends AbstractController {
 	private SysUserService sysUserService;
 	@Autowired
 	private SysUserRoleService sysUserRoleService;
+
+
+
+
+	@RequestMapping("/register")
+	public String register(){
+		return "zframe/user/add-register";
+	}
 
 
 
@@ -115,7 +121,7 @@ public class SysUserController extends AbstractController {
 	public R info(){
 		return R.ok().put("user", getUser());
 	}
-	
+
 	/**
 	 * 修改登录用户密码
 	 */
@@ -124,24 +130,24 @@ public class SysUserController extends AbstractController {
 	@RequestMapping("/password")
 	public R password(String password, String newPassword){
 
-		
+
 		//sha256加密
 		password = new Sha256Hash(password).toHex();
 		//sha256加密
 		newPassword = new Sha256Hash(newPassword).toHex();
-				
+
 		//更新密码
 		int count = sysUserService.updatePassword(getUserId(), password, newPassword);
 		if(count == 0){
 			return R.error("原密码不正确");
 		}
-		
+
 		//退出
 		ShiroUtils.logout();
-		
+
 		return R.ok();
 	}
-	
+
 	/**
 	 * 用户信息
 	 */
@@ -150,21 +156,48 @@ public class SysUserController extends AbstractController {
 	@RequiresPermissions("sys:user:list")
 	public R info(@PathVariable("userId") Long userId){
 		SysUser user = sysUserService.queryObject(userId);
-		
+
 		//获取用户所属的角色列表
 		List<Long> roleIdList = sysUserRoleService.queryRoleIdList(userId);
 		user.setRoleIdList(roleIdList);
-		
+
 		return R.ok().put("user", user);
 	}
-	
+
+
+	/**
+	 * 保存用户
+	 */
+	@ResponseBody
+	@RequestMapping("/registerData")
+	public R registerData(@RequestBody UserVo user){
+		SysUser sysUser = ConvertUtils.sourceToTarget(user, SysUser.class);
+		SysUser existUser = sysUserService.queryByUserName(user.getUsername());
+		if(existUser!=null){
+			return R.error("用户名已存在!");
+		}
+		List<Long> roleList=new ArrayList<>();
+		roleList.add(6L);
+		sysUser.setRoleIdList(roleList);
+		sysUser.setPassword(DefaultEnum.PASSWORD.getCode());
+		sysUser.setCreateUserId(1L);
+		sysUser.setStatus(1);
+		sysUserService.save(sysUser);
+
+		return R.ok();
+	}
+
+
+
+
+
+
 	/**
 	 * 保存用户
 	 */
 	@ResponseBody
 	@SysLog("保存用户")
 	@RequestMapping("/save")
-	@RequiresPermissions("sys:user:list")
 	public R save(@RequestBody SysUser user){
 		verifyForm(user);
 		SysUser existUser = sysUserService.queryByUserName(user.getUsername());
@@ -174,10 +207,10 @@ public class SysUserController extends AbstractController {
 		user.setPassword(DefaultEnum.PASSWORD.getCode());
 		user.setCreateUserId(getUserId());
 		sysUserService.save(user);
-		
+
 		return R.ok();
 	}
-	
+
 	/**
 	 * 修改用户
 	 */
@@ -190,10 +223,10 @@ public class SysUserController extends AbstractController {
 		user.setCreateUserId(getUserId());
 		sysUserService.update(user);
 		//todo kj
-		
+
 		return R.ok();
 	}
-	
+
 	/**
 	 * 删除用户
 	 */
@@ -205,13 +238,13 @@ public class SysUserController extends AbstractController {
 		if(ArrayUtils.contains(userIds, 1L)){
 			return R.error("系统管理员不能删除");
 		}
-		
+
 		if(ArrayUtils.contains(userIds, getUserId())){
 			return R.error("当前用户不能删除");
 		}
-		
+
 		sysUserService.deleteBatch(userIds);
-		
+
 		return R.ok();
 	}
 

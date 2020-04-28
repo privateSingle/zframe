@@ -93,6 +93,16 @@ function initPassword(table_id, url) {
 }
 //数据渲染对象
 var Render = {
+
+  info:function(rowdata,renderData){
+    var btn=' <button  onclick="detaillist(\''+"/app/kl/expend/userList/"+'\',\''+rowdata.userId+'\')" class="layui-btn layui-btn-mini">支出列表</button>';
+    return btn;
+  },
+
+  info2:function(rowdata,renderData){
+    var btn=' <button  onclick="detaillist(\''+"/app/kl/income/userList/"+'\',\''+rowdata.userId+'\')" class="layui-btn layui-btn-mini">收入列表</button>';
+    return btn;
+  },
     /**
      *   on 2017/6/22
      *  email  ：228112142@qq.com

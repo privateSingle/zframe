@@ -47,6 +47,8 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/swagger/**", "authc");
         filterChainDefinitionMap.put("/favicon.ico", "anon");
         filterChainDefinitionMap.put("/captcha.jpg", "anon");
+        filterChainDefinitionMap.put("/sys/user/register","anon");
+        filterChainDefinitionMap.put("/sys/user/registerData","anon");
         filterChainDefinitionMap.put("/", "anon");
         filterChainDefinitionMap.put("/**", "authc");
         bean.setFilterChainDefinitionMap(filterChainDefinitionMap);

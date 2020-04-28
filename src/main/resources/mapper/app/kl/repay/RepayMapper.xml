@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="platform.app.kl.repay.dao.RepayDao">
+
+    <resultMap type="platform.app.kl.repay.entity.Repay" id="repayMap">
+        <result property="id" column="id"/>
+        <result property="totalAmount" column="total_amount"/>
+        <result property="deadline" column="deadline"/>
+        <result property="refundDate" column="refund_date"/>
+        <result property="userId" column="user_id"/>
+    </resultMap>
+	<!-- 搜索数据区域 -->
+	<sql id="where_clause">
+		<where>
+			1=1
+							<if test="id != null and id != ''"> and t.id = #{id} </if>
+				<if test="idVague != null and idVague != ''"> and t.id like concat('%',#{idVague},'%') </if>
+							<if test="totalAmount != null and totalAmount != ''"> and t.total_amount = #{totalAmount} </if>
+				<if test="totalAmountVague != null and totalAmountVague != ''"> and t.total_amount like concat('%',#{totalAmountVague},'%') </if>
+							<if test="deadline != null and deadline != ''"> and t.deadline = #{deadline} </if>
+				<if test="deadlineVague != null and deadlineVague != ''"> and t.deadline like concat('%',#{deadlineVague},'%') </if>
+							<if test="refundDate != null and refundDate != ''"> and t.refund_date = #{refundDate} </if>
+				<if test="refundDateVague != null and refundDateVague != ''"> and t.refund_date like concat('%',#{refundDateVague},'%') </if>
+							<if test="userId != null and userId != ''"> and t.user_id = #{userId} </if>
+				<if test="userIdVague != null and userIdVague != ''"> and t.user_id like concat('%',#{userIdVague},'%') </if>
+					</where>
+	</sql>
+
+	<select id="get" resultType="platform.app.kl.repay.entity.Repay">
+		select * from t_repay where id = #{value}
+	</select>
+
+	<select id="getList" resultType="platform.app.kl.repay.entity.Repay">
+		select * from t_repay t <include refid="where_clause" />
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${sidx} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="getCount" resultType="int">
+		select count(*) from t_repay t  <include refid="where_clause" />
+	</select>
+
+
+	 
+	<insert id="save" parameterType="platform.app.kl.repay.entity.Repay" useGeneratedKeys="true" keyProperty="id">
+		insert into t_repay
+		(
+			`total_amount`, 
+			`deadline`, 
+			`refund_date`, 
+			`user_id`
+		)
+		values
+		(
+			#{totalAmount}, 
+			#{deadline}, 
+			#{refundDate}, 
+			#{userId}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="platform.app.kl.repay.entity.Repay">
+		update t_repay 
+		<set>
+			<if test="totalAmount != null">`total_amount` = #{totalAmount}, </if>
+			<if test="deadline != null">`deadline` = #{deadline}, </if>
+			<if test="refundDate != null">`refund_date` = #{refundDate}, </if>
+			<if test="userId != null">`user_id` = #{userId}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from t_repay where id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from t_repay where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>

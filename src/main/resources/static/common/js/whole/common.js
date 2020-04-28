@@ -322,6 +322,20 @@ function detailOne(url,id){
     });
 }
 
+function detaillist(url,userId){
+  parent.layer.open({
+    type: 2,
+    title: '列表',
+    shadeClose: false,
+    shade: [0.3, '#000'],
+    maxmin: true, //开启最大化最小化按钮
+    area: ['1000px', '700px'],
+    content: url+"/"+userId
+  });
+}
+
+
+
 function openIframe(title,url){
     parent.layer.open({
         type: 2,

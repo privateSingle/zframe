@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="platform.app.kl.expend.dao.ExpendDao">
+
+    <resultMap type="platform.app.kl.expend.entity.Expend" id="expendMap">
+        <result property="id" column="id"/>
+        <result property="expendName" column="expend_name"/>
+        <result property="expendPrice" column="expend_price"/>
+        <result property="expendDate" column="expend_date"/>
+        <result property="remark" column="remark"/>
+        <result property="addTime" column="add_time"/>
+        <result property="userId" column="user_id"/>
+    </resultMap>
+	<!-- 搜索数据区域 -->
+	<sql id="where_clause">
+		<where>
+			1=1
+							<if test="id != null and id != ''"> and t.id = #{id} </if>
+				<if test="idVague != null and idVague != ''"> and t.id like concat('%',#{idVague},'%') </if>
+							<if test="expendName != null and expendName != ''"> and t.expend_name = #{expendName} </if>
+				<if test="expendNameVague != null and expendNameVague != ''"> and t.expend_name like concat('%',#{expendNameVague},'%') </if>
+							<if test="expendPrice != null and expendPrice != ''"> and t.expend_price = #{expendPrice} </if>
+				<if test="expendPriceVague != null and expendPriceVague != ''"> and t.expend_price like concat('%',#{expendPriceVague},'%') </if>
+							<if test="expendDate != null and expendDate != ''"> and t.expend_date = #{expendDate} </if>
+				<if test="expendDateVague != null and expendDateVague != ''"> and t.expend_date like concat('%',#{expendDateVague},'%') </if>
+							<if test="remark != null and remark != ''"> and t.remark = #{remark} </if>
+				<if test="remarkVague != null and remarkVague != ''"> and t.remark like concat('%',#{remarkVague},'%') </if>
+							<if test="addTime != null and addTime != ''"> and t.add_time = #{addTime} </if>
+				<if test="addTimeVague != null and addTimeVague != ''"> and t.add_time like concat('%',#{addTimeVague},'%') </if>
+							<if test="userId != null and userId != ''"> and t.user_id = #{userId} </if>
+				<if test="userIdVague != null and userIdVague != ''"> and t.user_id like concat('%',#{userIdVague},'%') </if>
+					</where>
+	</sql>
+
+	<select id="get" resultType="platform.app.kl.expend.entity.Expend">
+		select * from t_expend where id = #{value}
+	</select>
+
+	<select id="getList" resultType="platform.app.kl.expend.entity.Expend">
+		select * from t_expend t <include refid="where_clause" />
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${sidx} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="getCount" resultType="int">
+		select count(*) from t_expend t  <include refid="where_clause" />
+	</select>
+
+
+	 
+	<insert id="save" parameterType="platform.app.kl.expend.entity.Expend" useGeneratedKeys="true" keyProperty="id">
+		insert into t_expend
+		(
+			`expend_name`, 
+			`expend_price`, 
+			`expend_date`, 
+			`remark`, 
+			`add_time`, 
+			`user_id`
+		)
+		values
+		(
+			#{expendName}, 
+			#{expendPrice}, 
+			#{expendDate}, 
+			#{remark}, 
+			#{addTime}, 
+			#{userId}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="platform.app.kl.expend.entity.Expend">
+		update t_expend 
+		<set>
+			<if test="expendName != null">`expend_name` = #{expendName}, </if>
+			<if test="expendPrice != null">`expend_price` = #{expendPrice}, </if>
+			<if test="expendDate != null">`expend_date` = #{expendDate}, </if>
+			<if test="remark != null">`remark` = #{remark}, </if>
+			<if test="addTime != null">`add_time` = #{addTime}, </if>
+			<if test="userId != null">`user_id` = #{userId}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from t_expend where id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from t_expend where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>

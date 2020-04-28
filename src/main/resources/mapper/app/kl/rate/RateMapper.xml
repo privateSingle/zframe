@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="platform.app.kl.rate.dao.RateDao">
+
+    <resultMap type="platform.app.kl.rate.entity.Rate" id="rateMap">
+        <result property="id" column="id"/>
+        <result property="rate" column="rate"/>
+    </resultMap>
+	<!-- 搜索数据区域 -->
+	<sql id="where_clause">
+		<where>
+			1=1
+							<if test="id != null and id != ''"> and t.id = #{id} </if>
+				<if test="idVague != null and idVague != ''"> and t.id like concat('%',#{idVague},'%') </if>
+							<if test="rate != null and rate != ''"> and t.rate = #{rate} </if>
+				<if test="rateVague != null and rateVague != ''"> and t.rate like concat('%',#{rateVague},'%') </if>
+					</where>
+	</sql>
+
+	<select id="get" resultType="platform.app.kl.rate.entity.Rate">
+		select * from t_rate where id = #{value}
+	</select>
+
+	<select id="getList" resultType="platform.app.kl.rate.entity.Rate">
+		select * from t_rate t <include refid="where_clause" />
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${sidx} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="getCount" resultType="int">
+		select count(*) from t_rate t  <include refid="where_clause" />
+	</select>
+
+
+	 
+	<insert id="save" parameterType="platform.app.kl.rate.entity.Rate" useGeneratedKeys="true" keyProperty="id">
+		insert into t_rate
+		(
+			`rate`
+		)
+		values
+		(
+			#{rate}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="platform.app.kl.rate.entity.Rate">
+		update t_rate 
+		<set>
+			<if test="rate != null">`rate` = #{rate}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from t_rate where id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from t_rate where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>

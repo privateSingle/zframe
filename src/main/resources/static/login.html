@@ -5,12 +5,7 @@
     <title>登录--后台管理</title>
     <link rel="stylesheet" href="/statics/plugins/layui/css/layui.css" media="all" />
     <link rel="stylesheet" href="/statics/css/login.css" media="all" />
-    <script type="text/javascript">
-        if(window !=top){
-            top.location.href=location.href;
-        }
-
-    </script>
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
     <style>
         .layui-input:focus, .layui-textarea:focus {
             border-color: #1e9fff !important;
@@ -24,7 +19,7 @@
 
 <div class="video_mask"></div>
 <div class="login">
-    <h1>管理员登录</h1>
+    <h1>登录</h1>
     <form class="layui-form">
         <div class="layui-form-item">
             <input class="layui-input" style="height: 38px;color:white;border-radius: 20px;border: 1px solid #ffffff;background-color: #fbfbfb00;" name="username" placeholder="用户名" value="admin" lay-verify="required" type="text" autocomplete="off">
@@ -38,7 +33,27 @@
 <!--        </div>-->
         <button class="layui-btn login_btn" style="height: 38px;border-radius: 20px;background-color: #01aaed5c;" lay-submit="" lay-filter="login">登录</button>
     </form>
+  <a class="layui-btn login_btn" id="register" style="margin-top:10px; margin-left:-1px; height: 38px;border-radius: 20px;background-color: #01aaed5c;" target="_blank"   href="/sys/user/register">
+    <p style="padding-top: 8px;">注册</p>
+  </a>
+  <div class="layui-form-item" lay-filter="myDiv" style="margin-top: 10px">
+    <select class="layui-btn login_btn" name="" id="selects" >
+      <option value="1">用户</option>
+      <option value="0">管理员</option>
+    </select>
+  </div>
 </div>
+<script>
+
+  $("#selects").change(function(){ //下拉框改变时取得值
+    var val = jQuery("#selects").val();
+    if (val == 0){
+      $("#register").hide();
+    }else {
+      $("#register").show();
+    }
+  });
+</script>
 <script type="text/javascript" src="/statics/plugins/layui/layui.js"></script>
 <script type="text/javascript" src="/zframe/login/login.js"></script>
 </body>

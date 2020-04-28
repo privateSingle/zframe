@@ -2,7 +2,7 @@ package platform.zframe.common.utils;
 
 /**
  * 常量
- * 
+ *
  * @author zhangyantao
  *
  * @date 2016年11月15日 下午1:23:52
@@ -11,11 +11,11 @@ public class Constant {
     /**包路径**/
     public final static String PACKAGE_NAME = "platform.zframe.common.enumresource";
 	/** 超级管理员ID */
-	public static final int SUPER_ADMIN = 1;
+	public static final long SUPER_ADMIN = 1;
 
 	/**
 	 * 菜单类型
-	 * 
+	 *
 	 * @author zhangyantao
 	 *
 	 * @date 2016年11月15日 下午1:24:29
@@ -44,10 +44,10 @@ public class Constant {
             return value;
         }
     }
-    
+
     /**
      * 定时任务状态
-     * 
+     *
      * @author zhangyantao
      *
      * @date 2016年12月3日 上午12:07:22
@@ -67,7 +67,7 @@ public class Constant {
         private ScheduleStatus(int value) {
             this.value = value;
         }
-        
+
         public int getValue() {
             return value;
         }

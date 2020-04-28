@@ -1,3 +1,4 @@
+
 layui.config({
     base: "js/"
 }).use(['form', 'layer'], function () {
@@ -28,3 +29,5 @@ function refreshCode(){
     var captcha = document.getElementById("captcha");
     captcha.src = "/captcha.jpg?t=" + new Date().getTime();
 }
+
+
